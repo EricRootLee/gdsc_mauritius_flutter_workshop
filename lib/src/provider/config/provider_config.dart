@@ -1,7 +1,7 @@
-import 'package:gdscworkshop/src/core/di/locator.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import '../../core/di/locator.dart';
 import '../map_provider.dart';
 import 'base_provider.dart';
 

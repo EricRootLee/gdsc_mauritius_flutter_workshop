@@ -2,13 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gdscworkshop/src/core/di/locator.dart';
+import 'package:gdscworkshop/src/splash_screen.dart';
 import 'package:provider/provider.dart';
-
 
 import 'src/helpers/common/app_constants.dart';
 import 'src/helpers/common/color_palette.dart';
 import 'src/provider/config/provider_config.dart';
-import 'src/views/home_screen.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -43,7 +42,7 @@ class GdscFlutterWorkshop extends StatelessWidget {
           primarySwatch: Colors.deepOrange,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: HomeScreen(),
+        home: SplashScreen(),
       ),
     );
   }

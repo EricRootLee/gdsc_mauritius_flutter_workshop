@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 
@@ -10,7 +9,7 @@ import '../core/data/service/places_service.dart';
 import '../core/models/crime_location_model.dart';
 import '../helpers/common/app_constants.dart';
 import '../helpers/widgets/adress_search.dart';
-import '../utils/app_extenstions.dart';
+import '../utils/app_extenstions_util.dart';
 
 class MapSerivce {
   MapSerivce(this.dataBase);
@@ -34,9 +33,6 @@ class MapSerivce {
     return detail;
   }
 
-  Future<List<Placemark>> getCurrentUserArea(lat, lng) async =>
-      await placemarkFromCoordinates(lat, lng);
-
   static Future<String?> isAreaFrequentFlagged(
       double startLat, double startLng, List<CrimeLocationModel> places) async {
     String? reportCases = AppConstants.reportedCases;
@@ -49,6 +45,6 @@ class MapSerivce {
         log(AppConstants.reportedLocation & "${places[i].locationId}");
       }
     }
-    return reportCases;
+    return places.isEmpty ? '0' : reportCases;
   }
 }

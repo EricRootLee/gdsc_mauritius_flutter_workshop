@@ -15,19 +15,10 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  late MapProvider mapProvider;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    mapProvider = Provider.of<MapProvider>(context, listen: true);
-    mapProvider.context = context;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: mapProvider.currentUserLocation == null
+        body: context.watch<MapProvider>().currentUserLocation == null
             ? const Center(
                 child: CircularProgressIndicator.adaptive(),
               )
@@ -35,16 +26,13 @@ class _MapPageState extends State<MapPage> {
                 children: [
                   GoogleMap(
                     mapType: MapType.normal,
-                    markers: Set.from(mapProvider.markers),
-                    circles: Set.from(mapProvider.circles),
+                    markers: Set.from(context.watch<MapProvider>().markers),
+                    circles: Set.from(context.read<MapProvider>().circles),
                     zoomGesturesEnabled: true,
                     myLocationEnabled: true,
                     scrollGesturesEnabled: true,
                     initialCameraPosition: CameraPosition(
-                      target: LatLng(
-                        mapProvider.crimeLocations[0].latitude!,
-                        mapProvider.crimeLocations[0].longitude!,
-                      ),
+                      target: LatLng(-25.7585829, 28.0578646),
                       zoom: 10,
                     ),
                   ),

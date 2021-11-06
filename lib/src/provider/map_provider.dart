@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gdscworkshop/src/core/data/network_datasource/database_client.dart';
-import 'package:gdscworkshop/src/core/models/crime_location_model.dart';
-import 'package:gdscworkshop/src/core/models/entity/crime_location_update.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
+import 'package:permission_handler/permission_handler.dart';
+
+import '../core/data/network_datasource/database_client.dart';
+import '../core/models/crime_location_model.dart';
+import '../core/models/entity/crime_location_update.dart';
 import '../helpers/common/color_palette.dart';
 import '../helpers/widgets/map_widgets.dart';
 import '../utils/map_utility.dart';
@@ -20,31 +21,45 @@ class MapProvider extends BaseProvider {
 
   Position? currentUserLocation;
   PlacesDetailsResponse? placedetails; //From Search
-  List<Placemark>? places; //From Gecoding
+//From Gecoding
   List<DocumentSnapshot>? locationData;
   List<CrimeLocationModel> crimeLocations = <CrimeLocationModel>[];
   List<Marker> markers = [];
   List<Circle> circles = [];
   List<String>? uploadedImages;
   MapProvider() {
-    setCurrentLocation();
     fetchLocations();
   }
 
-  Future<void> setCurrentLocation() async {
-    this.currentUserLocation = await _mapSerivce.getUserCurrentLocation();
-    await _requestCurrentUserAreaDetails(this.currentUserLocation!.latitude,
-        this.currentUserLocation!.longitude);
+  Future<void> updateCurrentLocation() async {
+    try {
+      await Permission.location.request();
+      if (await Permission.location.request().isGranted) {
+        currentUserLocation = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high);
+        print(' BASE Provider = > ${this.currentUserLocation!.latitude}');
+        markers.add(Marker(
+          draggable: false,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          markerId: MarkerId(this.currentUserLocation!.latitude.toString()),
+          position: LatLng(this.currentUserLocation!.latitude,
+              this.currentUserLocation!.longitude),
+        ));
+        notifyListeners();
+      } else {
+        currentUserLocation = null;
+        notifyListeners();
+      }
+    } catch (e) {
+      print(e);
+      currentUserLocation = null;
+      notifyListeners();
+    }
     notifyListeners();
   }
 
   Future<void> getUserPlaceSearch(context) async {
     this.placedetails = await _mapSerivce.searchPlace(context);
-    notifyListeners();
-  }
-
-  Future<void> _requestCurrentUserAreaDetails(double lat, double lng) async {
-    this.places = await _mapSerivce.getCurrentUserArea(lat, lng);
     notifyListeners();
   }
 

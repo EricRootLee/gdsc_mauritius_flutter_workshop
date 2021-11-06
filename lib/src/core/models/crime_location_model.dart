@@ -5,12 +5,14 @@ class CrimeLocationModel {
   double? longitude;
   int? reportNumber;
   String? locationId;
+  String? location;
   List<String>? crimeImages;
 
   CrimeLocationModel(
       {this.latitude,
       this.longitude,
       this.locationId,
+      this.location,
       this.reportNumber,
       this.crimeImages});
 
@@ -18,6 +20,7 @@ class CrimeLocationModel {
     latitude = docs['latitude'];
     longitude = docs['longitude'];
     reportNumber = docs['reportNumber'];
+    location = docs['location'];
     locationId = id;
     crimeImages = docs['crimeImages'].cast<String>();
   }
@@ -29,6 +32,7 @@ class CrimeLocationModel {
     data['reportNumber'] = this.reportNumber;
     data['crimeImages'] = this.crimeImages;
     data['locationId'] = this.locationId;
+    data['location'] = this.location;
 
     return data;
   }
